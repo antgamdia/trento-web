@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.40.3">
+    <meta name="project" content="Trento Web v3.1.2">
+
+
+    <title>Trento.UserIdentities — Trento Web v3.1.2</title>
+
+    <link rel="stylesheet" href="dist/html-elixir-NHQLCD6Y.css" />
+
+    <script defer src="dist/sidebar_items-ADE21433.js"></script>
+    <script defer src="docs_config.js"></script>
+    <script defer src="dist/html-Y2MUTVIN.js"></script>
+
+  </head>
+  <body>
+    <script>(()=>{var t="ex_doc:settings",e="dark";var o="dark",s="light";var E="sidebar_state",n="closed";var r="sidebar_width";var a="sidebar-open";var i=new URLSearchParams(window.location.search),S=i.get("theme")||JSON.parse(localStorage.getItem(t)||"{}").theme;(S===o||S!==s&&window.matchMedia("(prefers-color-scheme: dark)").matches)&&document.body.classList.add(e);var d=sessionStorage.getItem(E),A=d!==n&&!window.matchMedia(`screen and (max-width: ${768}px)`).matches;document.body.classList.toggle(a,A);var c=sessionStorage.getItem(r);c&&document.body.style.setProperty("--sidebarWidth",`${c}px`);var p=/(Macintosh|iPhone|iPad|iPod)/.test(window.navigator.userAgent);document.documentElement.classList.toggle("apple-os",p);})();
+</script>
+
+<div class="body-wrapper">
+
+<button id="sidebar-menu" class="sidebar-button sidebar-toggle" aria-label="toggle sidebar" aria-controls="sidebar">
+  <i class="ri-menu-line ri-lg" title="Collapse/expand sidebar"></i>
+</button>
+
+<nav id="sidebar" class="sidebar">
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectInfo">
+
+        <a href="api-reference.html" class="sidebar-projectImage">
+          <img src="assets/logo.svg" alt="Trento Web" />
+        </a>
+
+      <div>
+        <a href="api-reference.html" class="sidebar-projectName" translate="no">
+Trento Web
+        </a>
+        <div class="sidebar-projectVersion" translate="no">
+          v3.1.2
+        </div>
+      </div>
+    </div>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras="Info"></ul>
+  </div>
+</nav>
+
+<output role="status" id="toast"></output>
+
+<main class="content page-module" id="main" data-type="modules">
+  <div id="content" class="content-inner">
+    <div class="top-search">
+      <div class="search-settings">
+        <form class="search-bar" action="search.html">
+          <label class="search-label">
+            <span class="sr-only">Search documentation of Trento Web</span>
+            <div class="search-input-wrapper">
+              <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+              <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+                <i class="ri-close-line ri-lg" title="Cancel search"></i>
+              </button>
+            </div>
+          </label>
+        </form>
+        <div class="autocomplete">
+        </div>
+        <div class="engine-selector" data-multiple="false">
+          <button type="button" class="engine-button" aria-label="Select search engine" aria-haspopup="true" aria-expanded="false">
+            <i class="ri-search-2-line" aria-hidden="true"></i>
+            <span class="engine-name">Default</span>
+            <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+          </button>
+          <div class="engine-dropdown" hidden role="menu">
+
+              <button type="button"
+                      class="engine-option"
+                      data-engine-url="search.html?q="
+                      role="menuitemradio"
+                      aria-checked="true">
+                <span class="name">Default</span>
+                <span class="help">In-browser search</span>
+              </button>
+
+          </div>
+        </div>
+        <button class="icon-settings display-settings">
+          <i class="ri-settings-3-line"></i>
+          <span class="sr-only">Settings</span>
+        </button>
+      </div>
+    </div>
+
+<div id="top-content">
+  <div class="heading-with-actions top-heading">
+    <h1>
+      <span translate="no">Trento.<wbr />UserIdentities</span> 
+      <small class="app-vsn" translate="no">(Trento Web v3.1.2)</small>
+
+    </h1>
+
+<a href="Trento.UserIdentities.md" title="Copy Markdown (hold Ctrl/Cmd and click it to open as Markdown)" class="copy-markdown icon-action" rel="help">
+  <i class="ri-markdown-line" aria-hidden="true"></i>
+  <span class="sr-only">Copy Markdown</span>
+</a>
+
+
+
+      <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L4" title="View Source" class="icon-action" rel="help nofollow">
+        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        <span class="sr-only">View Source</span>
+      </a>
+
+  </div>
+
+
+    <section id="moduledoc">
+<p>The UserIdentities context, serves as custom context for PowAssent</p>
+    </section>
+
+</div>
+
+  <section id="summary" class="details-list">
+    <h2 class="section-heading">
+      <a class="hover-link" href="#summary">
+        <i class="ri-link-m" aria-hidden="true"></i>
+      </a>
+      <span class="text">Summary</span>
+    </h2>
+<div class="summary-functions summary">
+  <h3>
+    <a href="#functions">Functions</a>
+  </h3>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#all/1" data-no-tooltip="" translate="no">all(user)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:all/1"><code class="inline">PowAssent.Ecto.UserIdentities.Context.all/1</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#create/2" data-no-tooltip="" translate="no">create(user, user_identity_params)</a>
+
+          <span class="deprecated" title="Please use `upsert/2` instead">deprecated</span>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:create/2"><code class="inline">PowAssent.Ecto.UserIdentities.Context.create/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#create_user/3" data-no-tooltip="" translate="no">create_user(user_identity_params, user_params, user_id_params)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>redefining the PowAssent create user method, this is called when the user login through idp and a user identity
+does not exists on our database.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#delete/2" data-no-tooltip="" translate="no">delete(user, provider)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:delete/2"><code class="inline">PowAssent.Ecto.UserIdentities.Context.delete/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_user_by_provider_uid/2" data-no-tooltip="" translate="no">get_user_by_provider_uid(provider, uid)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:get_user_by_provider_uid/2"><code class="inline">PowAssent.Ecto.UserIdentities.Context.get_user_by_provider_uid/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow_assent_all/1" data-no-tooltip="" translate="no">pow_assent_all(user)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow_assent_create/2" data-no-tooltip="" translate="no">pow_assent_create(user, user_identity_params)</a>
+
+          <span class="deprecated" title="Please use `pow_assent_upsert/2` instead">deprecated</span>
+
+      </div>
+
+        <div class="summary-synopsis"><p>See <a href="#pow_assent_upsert/2"><code class="inline">Trento.UserIdentities.pow_assent_upsert/2</code></a>.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow_assent_create_user/3" data-no-tooltip="" translate="no">pow_assent_create_user(user_identity_params, user_params, user_id_params)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow_assent_delete/2" data-no-tooltip="" translate="no">pow_assent_delete(user, provider)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow_assent_get_user_by_provider_uid/2" data-no-tooltip="" translate="no">pow_assent_get_user_by_provider_uid(provider, uid)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pow_assent_upsert/2" data-no-tooltip="" translate="no">pow_assent_upsert(user, user_identity_params)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#upsert/2" data-no-tooltip="" translate="no">upsert(user, user_identity_params)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>redefining the PowAssent upsert method, if a IDP user is associated with a locked user,
+this is called when the user login with IDP and exist in our database with or without a user identity</p></div>
+
+    </div>
+
+</div>
+
+  </section>
+
+
+  <section id="functions" class="details-list">
+    <h2 class="section-heading">
+      <a class="hover-link" href="#functions">
+        <i class="ri-link-m" aria-hidden="true"></i>
+      </a>
+      <span class="text">Functions</span>
+    </h2>
+
+    <div class="functions-list">
+<section class="detail" id="all/1">
+
+  <div class="detail-header">
+    <a href="#all/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">all(user)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:all/1"><code class="inline">PowAssent.Ecto.UserIdentities.Context.all/1</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="create/2">
+
+  <div class="detail-header">
+    <a href="#create/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">create(user, user_identity_params)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+    <div class="deprecated">
+      This function is deprecated. Please use `upsert/2` instead.
+    </div>
+
+  <section class="docstring">
+
+<p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:create/2"><code class="inline">PowAssent.Ecto.UserIdentities.Context.create/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="create_user/3">
+
+  <div class="detail-header">
+    <a href="#create_user/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">create_user(user_identity_params, user_params, user_id_params)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L29" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>redefining the PowAssent create user method, this is called when the user login through idp and a user identity
+does not exists on our database.</p><p>If a user with the same username exists on our database, the user will be recovered and associated with the idp identity,
+otherwise the user will be created.</p>
+  </section>
+</section>
+<section class="detail" id="delete/2">
+
+  <div class="detail-header">
+    <a href="#delete/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">delete(user, provider)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:delete/2"><code class="inline">PowAssent.Ecto.UserIdentities.Context.delete/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="get_user_by_provider_uid/2">
+
+  <div class="detail-header">
+    <a href="#get_user_by_provider_uid/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_user_by_provider_uid(provider, uid)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Callback implementation for <a href="https://hexdocs.pm/pow_assent/0.4.18/PowAssent.Ecto.UserIdentities.Context.html#c:get_user_by_provider_uid/2"><code class="inline">PowAssent.Ecto.UserIdentities.Context.get_user_by_provider_uid/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="pow_assent_all/1">
+
+  <div class="detail-header">
+    <a href="#pow_assent_all/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow_assent_all(user)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="pow_assent_create/2">
+
+  <div class="detail-header">
+    <a href="#pow_assent_create/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow_assent_create(user, user_identity_params)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+    <div class="deprecated">
+      This function is deprecated. Please use `pow_assent_upsert/2` instead.
+    </div>
+
+  <section class="docstring">
+
+<p>See <a href="#pow_assent_upsert/2"><code class="inline">Trento.UserIdentities.pow_assent_upsert/2</code></a>.</p>
+  </section>
+</section>
+<section class="detail" id="pow_assent_create_user/3">
+
+  <div class="detail-header">
+    <a href="#pow_assent_create_user/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow_assent_create_user(user_identity_params, user_params, user_id_params)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="pow_assent_delete/2">
+
+  <div class="detail-header">
+    <a href="#pow_assent_delete/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow_assent_delete(user, provider)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="pow_assent_get_user_by_provider_uid/2">
+
+  <div class="detail-header">
+    <a href="#pow_assent_get_user_by_provider_uid/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow_assent_get_user_by_provider_uid(provider, uid)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="pow_assent_upsert/2">
+
+  <div class="detail-header">
+    <a href="#pow_assent_upsert/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pow_assent_upsert(user, user_identity_params)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L10" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="upsert/2">
+
+  <div class="detail-header">
+    <a href="#upsert/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">upsert(user, user_identity_params)</h1>
+
+
+        <a href="https://github.com/trento-project/web/blob/main/lib/trento/user_identities.ex#L52" class="icon-action" rel="help nofollow" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>redefining the PowAssent upsert method, if a IDP user is associated with a locked user,
+this is called when the user login with IDP and exist in our database with or without a user identity</p>
+  </section>
+</section>
+
+    </div>
+  </section>
+
+    <footer class="footer">
+
+        <p>
+
+          <span class="line">
+            <button class="a-main footer-button display-quick-switch" title="Go to package docs">
+              Go to package docs
+            </button>
+
+              <a href="llms.txt" target="_blank">
+                View llms.txt
+              </a>
+
+
+              <a href="Trento Web.epub">
+                Download ePub version
+              </a>
+
+          </span>
+        </p>
+
+        <p class="built-using">
+          Built using
+          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.40.3) for the
+
+            <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+
+        </p>
+
+
+    </footer>
+  </div>
+</main>
+</div>
+
+  </body>
+</html>
