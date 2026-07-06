@@ -45,7 +45,7 @@ safe-outputs:
     title-prefix: "[docs] "
     labels: [documentation, automation]
     draft: false
-    protected-files: fallback-to-issue
+    protected-files: allowed
 
 source: githubnext/agentics/workflows/doc-updater.md@1c6668b751c51af8571f01204ceffb19362e0f66
 ---
