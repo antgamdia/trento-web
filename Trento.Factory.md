@@ -61,6 +61,10 @@ A simple Factory helper module to be used within tests to generate test data
 
 # `cluster_checks_selected_event_factory`
 
+# `cluster_data_marked_in_sync_event_factory`
+
+# `cluster_data_marked_stale_event_factory`
+
 # `cluster_deregistered_event_factory`
 
 # `cluster_details_updated_event_factory`
@@ -72,6 +76,10 @@ A simple Factory helper module to be used within tests to generate test data
 # `cluster_factory`
 
 # `cluster_health_changed_event_factory`
+
+# `cluster_host_data_marked_in_sync_event_factory`
+
+# `cluster_host_data_marked_stale_event_factory`
 
 # `cluster_host_status_changed_event_factory`
 
@@ -219,6 +227,8 @@ Raises a helpful error if no factory is defined.
 
 # `installation_settings_factory`
 
+# `mark_application_instance_data_stale_command_factory`
+
 # `operation_completed_v1_factory`
 
 # `operation_completed_with_errors_v1_factory`
@@ -254,6 +264,12 @@ Raises a helpful error if no factory is defined.
 # `relevant_patch_factory`
 
 # `rollup_sap_system_command_factory`
+
+# `sap_system_data_marked_in_sync_event_factory`
+
+# `sap_system_data_marked_stale_event_factory`
+
+# `sap_system_database_stale_at_changed_event_factory`
 
 # `sap_system_deregistered_event_factory`
 

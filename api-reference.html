@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-elixir-NHQLCD6Y.css" />
 
-    <script defer src="dist/sidebar_items-63176FD7.js"></script>
+    <script defer src="dist/sidebar_items-DA18DD73.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-Y2MUTVIN.js"></script>
 
@@ -184,6 +184,15 @@ Trento Web
   </div>
 
     <div class="summary-synopsis"><p>This module is responsible for managing user AI configurations.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="Trento.AI.Configurations.Events.html" translate="no">Trento.<wbr />AI.<wbr />Configurations.<wbr />Events</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Behaviour + dispatcher for per-user AI configuration lifecycle events.</p></div>
 
 </div>
 <div class="summary-row">
@@ -554,6 +563,15 @@ SAP workloads.</p></div>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="Trento.Clusters.Commands.MarkClusterHostStale.html" translate="no">Trento.<wbr />Clusters.<wbr />Commands.<wbr />MarkClusterHostStale</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Mark a cluster host data as stale.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="Trento.Clusters.Commands.RegisterOfflineClusterHost.html" translate="no">Trento.<wbr />Clusters.<wbr />Commands.<wbr />RegisterOfflineClusterHost</a>
 
   </div>
@@ -700,6 +718,26 @@ Values are coming from pacemaker directly:
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="Trento.Clusters.Events.ClusterDataMarkedInSync.html" translate="no">Trento.<wbr />Clusters.<wbr />Events.<wbr />ClusterDataMarkedInSync</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event is emitted when a cluster's data is marked as in sync after all its
+cluster host data is marked in sync.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="Trento.Clusters.Events.ClusterDataMarkedStale.html" translate="no">Trento.<wbr />Clusters.<wbr />Events.<wbr />ClusterDataMarkedStale</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event is emitted when a cluster's data is marked as stale after at least
+one cluster host data is marked stale.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="Trento.Clusters.Events.ClusterDeregistered.html" translate="no">Trento.<wbr />Clusters.<wbr />Events.<wbr />ClusterDeregistered</a>
 
   </div>
@@ -742,6 +780,26 @@ Only applicable for ASCS/ERS clusters.</p></div>
   </div>
 
     <div class="summary-synopsis"><p>ClusterHealthChanged event</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="Trento.Clusters.Events.ClusterHostDataMarkedInSync.html" translate="no">Trento.<wbr />Clusters.<wbr />Events.<wbr />ClusterHostDataMarkedInSync</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event is emitted when a cluster host data is marked as in sync
+because the stale host sent fresh data again.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="Trento.Clusters.Events.ClusterHostDataMarkedStale.html" translate="no">Trento.<wbr />Clusters.<wbr />Events.<wbr />ClusterHostDataMarkedStale</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event is emitted when a cluster host data is marked as stale
+because the host stopped sending fresh data.</p></div>
 
 </div>
 <div class="summary-row">
@@ -2890,6 +2948,16 @@ and its calculated health is taken into account in host's aggregated health.</p>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="Trento.Infrastructure.AI.PubSubConfigurationEvents.html" translate="no">Trento.<wbr />Infrastructure.<wbr />AI.<wbr />PubSubConfigurationEvents</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Default <a href="Trento.AI.Configurations.Events.html"><code class="inline">Trento.AI.Configurations.Events</code></a> implementation: per-user AI
+configuration lifecycle events carried over <a href="https://hexdocs.pm/phoenix_pubsub/2.2.0/Phoenix.PubSub.html"><code class="inline">Phoenix.PubSub</code></a>.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="Trento.Infrastructure.AI.SagentsAgentServer.html" translate="no">Trento.<wbr />Infrastructure.<wbr />AI.<wbr />SagentsAgentServer</a>
 
   </div>
@@ -3053,6 +3121,16 @@ related to a restored database</p></div>
 
     <div class="summary-synopsis"><p>This event handler is responsible to forward update database health commands to the SAP systems
 related to a database that has a new health state.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="Trento.Infrastructure.Commanded.EventHandlers.SapSystemDatabaseStaleAtEventHandler.html" translate="no">Trento.<wbr />Infrastructure.<wbr />Commanded.<wbr />EventHandlers.<wbr />SapSystemDatabaseStaleAtEventHandler</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event handler is responsible to forward update database stale_at commands to the SAP systems
+related to a database that has a new stale_at state.</p></div>
 
 </div>
 <div class="summary-row">
@@ -3642,6 +3720,15 @@ installed.</p></div>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="Trento.SapSystems.Commands.UpdateDatabaseStaleAt.html" translate="no">Trento.<wbr />SapSystems.<wbr />Commands.<wbr />UpdateDatabaseStaleAt</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Update the stale_at timestamp of the database associated to the SAP system.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="Trento.SapSystems.Enums.EnsaVersion.html" translate="no">Trento.<wbr />SapSystems.<wbr />Enums.<wbr />EnsaVersion</a>
 
   </div>
@@ -3832,11 +3919,38 @@ synchronized and valid.</p></div>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="Trento.SapSystems.Events.SapSystemDataMarkedInSync.html" translate="no">Trento.<wbr />SapSystems.<wbr />Events.<wbr />SapSystemDataMarkedInSync</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event is emitted when a SAP system data is marked as in sync.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="Trento.SapSystems.Events.SapSystemDataMarkedStale.html" translate="no">Trento.<wbr />SapSystems.<wbr />Events.<wbr />SapSystemDataMarkedStale</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event is emitted when a SAP system data is marked as stale.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="Trento.SapSystems.Events.SapSystemDatabaseHealthChanged.html" translate="no">Trento.<wbr />SapSystems.<wbr />Events.<wbr />SapSystemDatabaseHealthChanged</a>
 
   </div>
 
     <div class="summary-synopsis"><p>This event is emitted when the SAP System database health has changed.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="Trento.SapSystems.Events.SapSystemDatabaseStaleAtChanged.html" translate="no">Trento.<wbr />SapSystems.<wbr />Events.<wbr />SapSystemDatabaseStaleAtChanged</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>This event is emitted when the database stale state associated to a SAP System changes.</p></div>
 
 </div>
 <div class="summary-row">

@@ -9,6 +9,7 @@ Trento.AI.Agent.Server.html
 Trento.AI.Agent.Supervisor.html
 Trento.AI.Agent.html
 Trento.AI.ApplicationConfigLoader.html
+Trento.AI.Configurations.Events.html
 Trento.AI.Configurations.html
 Trento.AI.ControllerSpecs.html
 Trento.AI.LLMBuilder.html
@@ -49,6 +50,7 @@ Trento.Clusters.Cluster.html
 Trento.Clusters.ClusterEnrichmentData.html
 Trento.Clusters.Commands.CompleteChecksExecution.html
 Trento.Clusters.Commands.DeregisterClusterHost.html
+Trento.Clusters.Commands.MarkClusterHostStale.html
 Trento.Clusters.Commands.RegisterOfflineClusterHost.html
 Trento.Clusters.Commands.RegisterOnlineClusterHost.html
 Trento.Clusters.Commands.RollUpCluster.html
@@ -65,11 +67,15 @@ Trento.Clusters.Enums.SapInstanceResourceType.html
 Trento.Clusters.Enums.SbdDeviceStatus.html
 Trento.Clusters.Events.ChecksSelected.html
 Trento.Clusters.Events.ClusterChecksHealthChanged.html
+Trento.Clusters.Events.ClusterDataMarkedInSync.html
+Trento.Clusters.Events.ClusterDataMarkedStale.html
 Trento.Clusters.Events.ClusterDeregistered.html
 Trento.Clusters.Events.ClusterDetailsUpdated.html
 Trento.Clusters.Events.ClusterDiscoveredHealthChanged.html
 Trento.Clusters.Events.ClusterDistributedHealthChanged.html
 Trento.Clusters.Events.ClusterHealthChanged.html
+Trento.Clusters.Events.ClusterHostDataMarkedInSync.html
+Trento.Clusters.Events.ClusterHostDataMarkedStale.html
 Trento.Clusters.Events.ClusterHostStatusChanged.html
 Trento.Clusters.Events.ClusterRegistered.html
 Trento.Clusters.Events.ClusterReplicationHealthChanged.html
@@ -313,6 +319,7 @@ Trento.Hosts.ValueObjects.SaptuneStatus.html
 Trento.Hosts.ValueObjects.SlesSubscription.html
 Trento.Hosts.ValueObjects.SystemdUnit.html
 Trento.Hosts.html
+Trento.Infrastructure.AI.PubSubConfigurationEvents.html
 Trento.Infrastructure.AI.SagentsAgentServer.html
 Trento.Infrastructure.AI.SagentsDynamicSupervisor.html
 Trento.Infrastructure.Alerting.Alerting.html
@@ -331,6 +338,7 @@ Trento.Infrastructure.Commanded.EventHandlers.DatabaseDeregistrationEventHandler
 Trento.Infrastructure.Commanded.EventHandlers.DatabaseRestoreEventHandler.html
 Trento.Infrastructure.Commanded.EventHandlers.RollUpEventHandler.html
 Trento.Infrastructure.Commanded.EventHandlers.SapSystemDatabaseHealthEventHandler.html
+Trento.Infrastructure.Commanded.EventHandlers.SapSystemDatabaseStaleAtEventHandler.html
 Trento.Infrastructure.Commanded.EventHandlers.SaptuneStatusUpdateEventHandler.html
 Trento.Infrastructure.Commanded.EventHandlers.SoftwareUpdatesDiscoveryEventHandler.html
 Trento.Infrastructure.Commanded.EventHandlers.StreamRollUpEventHandler.html
@@ -395,6 +403,7 @@ Trento.SapSystems.Commands.RegisterApplicationInstance.html
 Trento.SapSystems.Commands.RestoreSapSystem.html
 Trento.SapSystems.Commands.RollUpSapSystem.html
 Trento.SapSystems.Commands.UpdateDatabaseHealth.html
+Trento.SapSystems.Commands.UpdateDatabaseStaleAt.html
 Trento.SapSystems.Enums.EnsaVersion.html
 Trento.SapSystems.Enums.Status.html
 Trento.SapSystems.Events.ApplicationInstanceDataMarkedInSync.html
@@ -416,7 +425,10 @@ Trento.SapSystems.Events.DatabaseInstanceRegistered.html
 Trento.SapSystems.Events.DatabaseInstanceSystemReplicationChanged.html
 Trento.SapSystems.Events.DatabaseRegistered.html
 Trento.SapSystems.Events.DatabaseRestored.html
+Trento.SapSystems.Events.SapSystemDataMarkedInSync.html
+Trento.SapSystems.Events.SapSystemDataMarkedStale.html
 Trento.SapSystems.Events.SapSystemDatabaseHealthChanged.html
+Trento.SapSystems.Events.SapSystemDatabaseStaleAtChanged.html
 Trento.SapSystems.Events.SapSystemDeregistered.html
 Trento.SapSystems.Events.SapSystemHealthChanged.html
 Trento.SapSystems.Events.SapSystemRegistered.html
@@ -594,7 +606,7 @@ dist/lato-latin-700-normal-2XVSBPG4.woff2
 dist/lato-latin-ext-400-normal-N27NCBWW.woff2
 dist/lato-latin-ext-700-normal-Q2L5DVMW.woff2
 dist/remixicon-ZWU5GQ4X.woff2
-dist/search_data-A254B881.js
-dist/sidebar_items-63176FD7.js
+dist/search_data-DDAE54EC.js
+dist/sidebar_items-DA18DD73.js
 index.html
 search.html

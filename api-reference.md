@@ -16,6 +16,7 @@
 
 - [Trento.AI.Configurations](Trento.AI.Configurations.md): This module is responsible for managing user AI configurations.
 
+- [Trento.AI.Configurations.Events](Trento.AI.Configurations.Events.md): Behaviour + dispatcher for per-user AI configuration lifecycle events.
 - [Trento.AI.ControllerSpecs](Trento.AI.ControllerSpecs.md): Per-action AI-tool metadata macro. Sits next to `OpenApiSpex.ControllerSpecs.operation/2`
 in controllers and labels the immediately following public function as an AI tool.
 - [Trento.AI.LLMBuilder](Trento.AI.LLMBuilder.md): Builds a LangChain chat-model struct for a given User.
@@ -268,6 +269,8 @@ SAP workloads.
 
   - [Trento.Clusters.Commands.DeregisterClusterHost](Trento.Clusters.Commands.DeregisterClusterHost.md): Deregister a host from a cluster
 
+  - [Trento.Clusters.Commands.MarkClusterHostStale](Trento.Clusters.Commands.MarkClusterHostStale.md): Mark a cluster host data as stale.
+
   - [Trento.Clusters.Commands.RegisterOfflineClusterHost](Trento.Clusters.Commands.RegisterOfflineClusterHost.md): Command to register a host in a cluster when the host is offline.
 
   - [Trento.Clusters.Commands.RegisterOnlineClusterHost](Trento.Clusters.Commands.RegisterOnlineClusterHost.md): Register a cluster node to the monitoring system.
@@ -301,6 +304,12 @@ https://github.com/ClusterLabs/pacemaker/blob/main/daemons/controld/controld_fsa
 
   - [Trento.Clusters.Events.ClusterChecksHealthChanged](Trento.Clusters.Events.ClusterChecksHealthChanged.md): This event is emitted when the checks health of a cluster changes.
 
+  - [Trento.Clusters.Events.ClusterDataMarkedInSync](Trento.Clusters.Events.ClusterDataMarkedInSync.md): This event is emitted when a cluster's data is marked as in sync after all its
+cluster host data is marked in sync.
+
+  - [Trento.Clusters.Events.ClusterDataMarkedStale](Trento.Clusters.Events.ClusterDataMarkedStale.md): This event is emitted when a cluster's data is marked as stale after at least
+one cluster host data is marked stale.
+
   - [Trento.Clusters.Events.ClusterDeregistered](Trento.Clusters.Events.ClusterDeregistered.md): This event is emitted when a cluster is deregistered.
 
   - [Trento.Clusters.Events.ClusterDetailsUpdated](Trento.Clusters.Events.ClusterDetailsUpdated.md): This event is emitted when cluster details are updated.
@@ -310,6 +319,12 @@ https://github.com/ClusterLabs/pacemaker/blob/main/daemons/controld/controld_fsa
 Only applicable for ASCS/ERS clusters.
 
   - [Trento.Clusters.Events.ClusterHealthChanged](Trento.Clusters.Events.ClusterHealthChanged.md): ClusterHealthChanged event
+
+  - [Trento.Clusters.Events.ClusterHostDataMarkedInSync](Trento.Clusters.Events.ClusterHostDataMarkedInSync.md): This event is emitted when a cluster host data is marked as in sync
+because the stale host sent fresh data again.
+
+  - [Trento.Clusters.Events.ClusterHostDataMarkedStale](Trento.Clusters.Events.ClusterHostDataMarkedStale.md): This event is emitted when a cluster host data is marked as stale
+because the host stopped sending fresh data.
 
   - [Trento.Clusters.Events.ClusterHostStatusChanged](Trento.Clusters.Events.ClusterHostStatusChanged.md): When a host's cluster status changes, from online to offline or vice versa,
 
@@ -494,6 +509,8 @@ deployed SAP systems, which is composed by the application layer.
 
   - [Trento.SapSystems.Commands.UpdateDatabaseHealth](Trento.SapSystems.Commands.UpdateDatabaseHealth.md): Update the health of the database associated to the SAP system.
 
+  - [Trento.SapSystems.Commands.UpdateDatabaseStaleAt](Trento.SapSystems.Commands.UpdateDatabaseStaleAt.md): Update the stale_at timestamp of the database associated to the SAP system.
+
   - [Trento.SapSystems.Enums.EnsaVersion](Trento.SapSystems.Enums.EnsaVersion.md): Type that represents the supported ENSA versions.
 
   - [Trento.SapSystems.Enums.Status](Trento.SapSystems.Enums.Status.md): Type that represents SAP and HANA instances status.
@@ -536,7 +553,13 @@ synchronized and valid.
 
   - [Trento.SapSystems.Events.DatabaseRestored](Trento.SapSystems.Events.DatabaseRestored.md): This event is emitted when a database is restored.
 
+  - [Trento.SapSystems.Events.SapSystemDataMarkedInSync](Trento.SapSystems.Events.SapSystemDataMarkedInSync.md): This event is emitted when a SAP system data is marked as in sync.
+
+  - [Trento.SapSystems.Events.SapSystemDataMarkedStale](Trento.SapSystems.Events.SapSystemDataMarkedStale.md): This event is emitted when a SAP system data is marked as stale.
+
   - [Trento.SapSystems.Events.SapSystemDatabaseHealthChanged](Trento.SapSystems.Events.SapSystemDatabaseHealthChanged.md): This event is emitted when the SAP System database health has changed.
+
+  - [Trento.SapSystems.Events.SapSystemDatabaseStaleAtChanged](Trento.SapSystems.Events.SapSystemDatabaseStaleAtChanged.md): This event is emitted when the database stale state associated to a SAP System changes.
 
   - [Trento.SapSystems.Events.SapSystemDeregistered](Trento.SapSystems.Events.SapSystemDeregistered.md): This event is emitted when a SAP system is deregistered (decommissioned).
 
@@ -685,6 +708,8 @@ related to a restored database
 
   - [Trento.Infrastructure.Commanded.EventHandlers.SapSystemDatabaseHealthEventHandler](Trento.Infrastructure.Commanded.EventHandlers.SapSystemDatabaseHealthEventHandler.md): This event handler is responsible to forward update database health commands to the SAP systems
 related to a database that has a new health state.
+  - [Trento.Infrastructure.Commanded.EventHandlers.SapSystemDatabaseStaleAtEventHandler](Trento.Infrastructure.Commanded.EventHandlers.SapSystemDatabaseStaleAtEventHandler.md): This event handler is responsible to forward update database stale_at commands to the SAP systems
+related to a database that has a new stale_at state.
   - [Trento.Infrastructure.Commanded.EventHandlers.SaptuneStatusUpdateEventHandler](Trento.Infrastructure.Commanded.EventHandlers.SaptuneStatusUpdateEventHandler.md): Event handler to update saptune status when application or HANA database instances are registered/deregistered.
 A host saptune health depends on SAP instances running on the host, so any update on that
 needs to be applied in the saptune state health.
@@ -694,6 +719,9 @@ Here is where the actual integration with the external system happens and releva
   - [Trento.Infrastructure.Commanded.EventHandlers.StreamRollUpEventHandler](Trento.Infrastructure.Commanded.EventHandlers.StreamRollUpEventHandler.md): This module is responsible for triggering the roll-up of an aggregate.
 
 - Infrastructure
+  - [Trento.Infrastructure.AI.PubSubConfigurationEvents](Trento.Infrastructure.AI.PubSubConfigurationEvents.md): Default `Trento.AI.Configurations.Events` implementation: per-user AI
+configuration lifecycle events carried over `Phoenix.PubSub`.
+
   - [Trento.Infrastructure.AI.SagentsAgentServer](Trento.Infrastructure.AI.SagentsAgentServer.md): Production implementation of `Trento.AI.Agent.Server` —
 delegates to `Sagents.AgentServer`.
 
