@@ -1,0 +1,317 @@
+= CI/CD Pipeline Guide
+// SPDX-FileCopyrightText: SUSE LLC
+// SPDX-License-Identifier: Apache-2.0
+
+This guide describes the GitHub Actions workflows used in the Trento Web project.
+All workflows are defined in `.github/workflows/`.
+
+== Overview of Workflows
+
+[options="header"]
+|===
+| Workflow file | Trigger | Purpose
+
+| `ci.yaml`
+| Push to `main`, pull request, manual
+| Main CI pipeline: lint, test, build
+
+| `pr_env.yaml`
+| Pull request (opened, synchronized, labeled)
+| Create or update a PR preview environment
+
+| `pr_env_close.yaml`
+| Pull request (closed)
+| Tear down the PR preview environment
+
+| `release.yaml`
+| Push to `main` or `release` that changes `VERSION`
+| Tag release, publish container images, sync OBS
+
+| `e2e.yaml`
+| Manual (`workflow_dispatch`)
+| Run E2E tests on AWS infrastructure
+
+| `backend-flaky-tests-detection.yaml`
+| Daily schedule, manual
+| Detect flaky Elixir tests
+
+| `jest-flaky-tests-detection.yaml`
+| Daily schedule, manual
+| Detect flaky Jest (frontend) tests
+
+| `e2e-flaky-tests-detection.yaml`
+| Daily schedule, manual
+| Detect flaky Cypress E2E tests
+
+| `flaky-tests-analysis.yaml`
+| Called by flaky-test detection workflows
+| Reusable analysis workflow (computes flip rates)
+
+| `copilot-setup-steps.yml`
+| GitHub Copilot agent
+| Pre-configure the Copilot cloud agent environment
+|===
+
+== Main CI Workflow (`ci.yaml`)
+
+=== Selective Test Running
+
+On pull requests, CI uses path filters to skip unrelated test jobs and reduce build time.
+The `detect-changes` job runs first and sets output flags consumed by all other jobs:
+
+[options="header"]
+|===
+| Changed paths | Jobs that run
+
+| `.tool-versions`, `.github/**` (critical files)
+| All jobs run (full CI)
+
+| `lib/**`, `*.ex`, `*.exs`, `config/**`, `mix.lock`, `test/**`
+| Elixir jobs only (`test-elixir`, `static-code-analysis-elixir`, `test-release`)
+
+| `assets/**`, `priv/static/**`
+| Asset jobs only (`test-javascript`, `static-code-analysis-js`)
+
+| No matching path
+| No test jobs run; only `detect-changes` and shared checks (spelling, license)
+|===
+
+On pushes to `main` (not a pull request), all jobs always run.
+
+=== Matrix Builds
+
+Both Elixir and Node.js test jobs use a two-version matrix.
+The backwards-compatible (BC) version and the current development version run in parallel to detect regressions before upgrading.
+
+Current versions (from `.tool-versions`):
+
+[options="header"]
+|===
+| Runtime | Development version | Backwards-compatible version
+
+| Elixir
+| 1.19.5-otp-27
+| 1.15.7-otp-26
+
+| Erlang/OTP
+| 27.3.4.11
+| 26.2.1
+
+| Node.js
+| 24.13.1
+| 20.20.0
+|===
+
+=== CI Job Summary
+
+The main CI pipeline runs the following jobs in dependency order:
+
+. **`detect-changes`** — determines which test jobs to run based on changed paths
+. **`setup-matrix-env`** — reads versions from `.tool-versions` and computes matrix values
+. **`elixir-deps`** — installs and caches Elixir/Mix dependencies (keyed by `mix.lock`)
+. **`npm-deps`** — installs and caches Node.js dependencies (keyed by `assets/package-lock.json`)
+. **`check-spelling`** — runs `codespell` to catch common misspellings
+. **`check-licenses`** — validates SPDX license headers on all source files
+. **`static-code-analysis-js`** — runs ESLint and Prettier format checks on `assets/`
+. **`static-code-analysis-elixir`** — runs `mix credo`, `mix format --check-formatted`, and `mix dialyzer`
+. **`test-javascript`** — runs `cd assets && npm test` (Jest)
+. **`test-elixir`** — runs `mix coveralls.json --warnings-as-errors --trace` with Docker Compose services
+. **`test-release`** — builds and starts a release (`MIX_ENV=prod`) to catch production-only failures
+. **`generate-docs`** — generates ExDoc HTML, OpenAPI JSON, and Swagger UI; publishes to GitHub Pages
+. **`coveralls-finish`** — signals Coveralls that all parallel coverage uploads are complete
+
+=== Dependency Caching
+
+Mix and npm dependencies are cached by content hash:
+
+* Elixir deps: key `erlang-{otp}-elixir-{version}-{mix.lock hash}-{MIX_ENV}`
+* Node.js deps: key `nodejs-{version}-{assets/package-lock.json hash}`
+
+If the lockfile changes, the cache miss triggers a fresh install.
+Existing cache hits skip the install step.
+
+=== Running Elixir Tests Locally
+
+The `test-elixir` CI job starts PostgreSQL and other services via `docker-compose.yaml`.
+To reproduce the CI environment locally:
+
+[source,bash]
+----
+docker-compose up -d
+MIX_ENV=test mix coveralls.json --warnings-as-errors
+----
+
+To run static analysis locally:
+
+[source,bash]
+----
+mix format --check-formatted
+mix credo --strict
+mix dialyzer
+----
+
+== PR Preview Environments (`pr_env.yaml`)
+
+Pull request environments are automatically created when:
+
+. The PR author is on the allow list (configured in repository variable `PR_ENV_ALLOW_LIST`), *and*
+. The PR has the label specified in repository variable `PR_ENV_LABEL`.
+
+=== How It Works
+
+[arabic]
+. The workflow checks that both conditions are met.
+. A container image is built and pushed to GHCR with the tag `{PR_NUMBER}-env`.
+. An Ansible playbook deploys the image to the shared PR environment host.
+. The environment is accessible at `{PR_NUMBER}.prenv.trento.suse.com`.
+
+=== Cleanup
+
+When a PR is closed (merged or abandoned), the `pr_env_close.yaml` workflow tears down the environment automatically.
+
+=== Default Credentials
+
+PR environments use fixed credentials for convenience:
+
+* Admin password: `adminpassword`
+* PostgreSQL user: `{PR_NUMBER}web` / password: `trento`
+* Wanda PostgreSQL user: `{PR_NUMBER}wanda` / password: `wanda`
+
+[IMPORTANT]
+====
+PR environments are ephemeral and publicly accessible.
+Do not use production data or sensitive configurations in PR environments.
+====
+
+== Release Process (`release.yaml`)
+
+A release is triggered automatically when the `VERSION` file changes on the `main` or `release` branch.
+
+=== Steps
+
+[arabic]
+. **Git Release** — calls the shared `trento-project/.github` reusable workflow to create a git tag and GitHub release based on `VERSION`.
+. **Container Images** — builds and pushes three images to GHCR:
+** `trento-web:{version}` — production image tagged with the semver version
+** `trento-web:rolling` — always-updated tag for the latest `main` build
+** `trento-web:demo` — demo image built from `main` with `MIX_ENV=demo`
+. **OBS Sync** — updates the Open Build Service package (when `OBS_ENABLED` is set).
+
+=== Version File
+
+The version is read from the `VERSION` file in the repository root.
+To release a new version, update `VERSION` and commit to `main` or `release`.
+
+You can also compute the current development version using the helper script:
+
+[source,bash]
+----
+./hack/get_version_from_git.sh
+----
+
+This outputs a semver string based on the latest git tag and the number of commits since that tag (for example, `1.3.0+git.42.1234567890.abc1234`).
+
+See xref:../hack/README.md[Developer Tools (`hack/`)] for more information.
+
+== E2E Tests on AWS (`e2e.yaml`)
+
+Full end-to-end tests run on real AWS infrastructure provisioned by Terraform.
+The workflow is triggered only manually (`workflow_dispatch`) to avoid unnecessary cost.
+
+=== What It Tests
+
+The E2E workflow deploys a realistic HANA HA cluster setup on AWS:
+
+* Two HANA nodes using pre-built AMIs
+* One Trento server instance
+* Network, key pairs, and security groups managed by Terraform (from `trento-project/trento-e2e`)
+
+=== Running E2E Tests Manually
+
+[arabic]
+. Go to the *Actions* tab in GitHub.
+. Select *e2e tests*.
+. Click *Run workflow*.
+
+The workflow uploads a Terraform state artifact on completion so you can inspect or destroy the infrastructure if something goes wrong.
+
+For local E2E development without AWS, see the xref:Development/testing.adoc#_end_to_end_testing_cypress[E2E Testing section] of the Testing Guide.
+
+== Flaky Test Detection
+
+Three daily workflows detect flaky tests across the test suites.
+Each workflow runs the tests many times (default: 50 runs) and reports tests that fail intermittently.
+
+=== Backend Flaky Tests (`backend-flaky-tests-detection.yaml`)
+
+Runs the Elixir test suite 50 times each night (19:09 Europe/Madrid).
+Uses the same two-version matrix as the main CI.
+
+=== Frontend Flaky Tests (`jest-flaky-tests-detection.yaml`)
+
+Runs the Jest test suite 50 times each night (19:39 Europe/Madrid).
+
+=== E2E Flaky Tests (`e2e-flaky-tests-detection.yaml`)
+
+Runs Cypress tests nightly against the demo environment.
+
+=== Flaky Tests Analysis (`flaky-tests-analysis.yaml`)
+
+This reusable workflow is called by the three detection workflows above.
+It:
+
+[arabic]
+. Downloads JUnit XML reports from all runs.
+. Computes a "flip rate" for each test — the percentage of runs in which the test result changed from the previous run.
+. Reports the top flaky tests (those above the `FLAKY_TESTS_FAILURE_RATE_THRESHOLD` of 20%).
+. Optionally posts an alert to Slack (if `SLACK_FLAKY_TESTS_ALERT_WEBHOOK_URL` is configured).
+
+=== Running Flaky Test Analysis Locally
+
+You can reproduce the analysis locally using the scripts in `hack/flaky_tests_analysis/`.
+See the link:../../hack/flaky_tests_analysis/README.md[flaky tests analysis README] for full instructions.
+
+The high-level workflow is:
+
+[arabic]
+. Generate test run data:
++
+[source,bash]
+----
+# Run the Elixir suite 100 times
+cd hack/flaky_tests_analysis
+make N-TIMES=100 gen-test-data-be
+
+# Run a single spec 50 times
+make RUN_ONLY=./test/trento/clusters_test.exs N-TIMES=50 gen-test-data-be
+----
+. Create the Python virtual environment and install dependencies:
++
+[source,bash]
+----
+make venv-create
+source .venv/bin/activate
+make install-deps
+----
+. Analyze the collected JUnit files:
++
+[source,bash]
+----
+make analyze-files
+----
+
+=== How to Fix Flaky Tests
+
+When a test is flagged as flaky:
+
+[arabic]
+. Identify the root cause: is it a race condition, ordering dependency, or shared state leak?
+. For database tests, ensure `async: false` is set if the test mutates shared state.
+. For frontend tests, avoid hard-coded timeouts; use `waitFor` from React Testing Library.
+. For E2E tests, use retry patterns and avoid fragile CSS selectors.
+
+== See Also
+
+* xref:Development/testing.adoc[Testing Guide]
+* xref:Development/hack-on-the-trento.adoc[Local Development Setup]
+* link:../../hack/flaky_tests_analysis/README.md[Flaky Tests Analysis Tool]
