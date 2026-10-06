@@ -1,0 +1,413 @@
+= Testing Guide
+// SPDX-FileCopyrightText: SUSE LLC
+// SPDX-License-Identifier: Apache-2.0
+
+This guide describes how to run and write tests for Trento Web.
+The project uses three testing layers: a backend suite written in Elixir, a frontend suite written in JavaScript, and end-to-end (E2E) tests driven by Cypress.
+
+== Backend Testing (ExUnit)
+
+=== Running the Tests
+
+The backend test suite uses link:https://hexdocs.pm/ex_unit/ExUnit.html[ExUnit] and requires a running PostgreSQL instance.
+Start the development dependencies before running tests:
+
+[source,bash]
+----
+docker-compose up -d
+----
+
+Run the full backend suite:
+
+[source,bash]
+----
+mix test
+----
+
+Run a specific test file:
+
+[source,bash]
+----
+mix test test/trento/clusters_test.exs
+----
+
+Run a specific test by line number:
+
+[source,bash]
+----
+mix test test/trento/clusters_test.exs:42
+----
+
+Run tests matching a name pattern:
+
+[source,bash]
+----
+mix test --only describe:"register cluster"
+----
+
+Run the suite with coverage reporting (used in CI):
+
+[source,bash]
+----
+mix coveralls.json
+----
+
+=== Test Organization
+
+Tests live in the `test/` directory and mirror the `lib/` source tree:
+
+[source]
+----
+test/
+├── support/              # Shared test helpers and case templates
+│   ├── factory.ex        # ExMachina factory for test data
+│   ├── aggregate_case.ex # Case template for aggregate (Event Sourcing) tests
+│   ├── data_case.ex      # Case template for tests that touch the database
+│   ├── conn_case.ex      # Case template for HTTP controller tests
+│   ├── channel_case.ex   # Case template for Phoenix Channel tests
+│   ├── messaging_case.ex # Case template for RabbitMQ message handler tests
+│   ├── helpers/          # Shared utility helpers (abilities, auth)
+│   └── commanded/        # Helpers for Commanded aggregate testing
+├── fixtures/             # Static fixture files (JSON discovery payloads, scenarios)
+│   ├── discovery/        # Agent discovery event payloads
+│   └── scenarios/        # Full-stack test scenarios for E2E and photofinish
+└── trento/               # Unit and integration tests (mirrors lib/trento/)
+----
+
+=== Test Case Templates
+
+Choose the appropriate case template for each test module:
+
+* `Trento.DataCase` — tests that read from or write to the database (use `async: true` with PostgreSQL)
+* `Trento.AggregateCase` — tests for Commanded aggregates; dispatches commands and asserts events
+* `TrentoWeb.ConnCase` — tests for Phoenix controllers and plug pipelines
+* `TrentoWeb.ChannelCase` — tests for Phoenix Channels
+* `Trento.MessagingCase` — tests for RabbitMQ message consumers
+
+Example aggregate test:
+
+[source,elixir]
+----
+defmodule Trento.Clusters.ClusterTest do
+  use Trento.AggregateCase, aggregate: Trento.Clusters.Cluster, async: true
+
+  alias Trento.Clusters.Commands.RegisterCluster
+  alias Trento.Clusters.Events.ClusterRegistered
+
+  test "registers a new cluster" do
+    cluster_id = Faker.UUID.v4()
+    command = %RegisterCluster{cluster_id: cluster_id, name: "hana-cluster-01", ...}
+
+    assert_events(command, [%ClusterRegistered{cluster_id: cluster_id, ...}])
+  end
+end
+----
+
+Example controller test:
+
+[source,elixir]
+----
+defmodule TrentoWeb.V1.ClusterControllerTest do
+  use TrentoWeb.ConnCase, async: true
+
+  import Trento.Factory
+
+  setup :setup_api_spec_v1
+  setup :setup_user
+
+  test "returns a list of clusters", %{conn: conn} do
+    insert_list(3, :cluster)
+    conn = get(conn, ~p"/api/v1/clusters")
+    assert %{"items" => clusters} = json_response(conn, 200)
+    assert length(clusters) == 3
+  end
+end
+----
+
+=== Test Factories
+
+The project uses link:https://hexdocs.pm/ex_machina/[ExMachina] for building test data.
+All factories are defined in `test/support/factory.ex`.
+
+Use `insert/2` for persisted records and `build/2` for in-memory structs:
+
+[source,elixir]
+----
+# Insert a persisted host record
+host = insert(:host)
+
+# Build an in-memory struct (no database write)
+cluster = build(:cluster, name: "my-cluster")
+
+# Override specific fields
+user = insert(:user, username: "jane.doe", email: "jane@example.com")
+
+# Insert multiple records
+insert_list(5, :host)
+----
+
+=== Mocking with Mox
+
+External dependencies are mocked using link:https://hexdocs.pm/mox/[Mox].
+Mocks are defined in `test/support/` files and configured in `config/test.exs`.
+
+[source,elixir]
+----
+# Example: mock the checks service adapter
+import Mox
+
+setup :verify_on_exit!
+
+test "triggers check execution" do
+  expect(Trento.Infrastructure.Checks.MockAdapter, :request_checks_execution, fn _cluster_id ->
+    {:ok, nil}
+  end)
+
+  # ... test code that calls the checks service
+end
+----
+
+== Frontend Testing (Jest)
+
+=== Running the Tests
+
+Frontend tests use link:https://jestjs.io/[Jest] with link:https://testing-library.com/docs/react-testing-library/intro/[React Testing Library].
+All commands run from the `assets/` directory:
+
+[source,bash]
+----
+cd assets && npm test
+----
+
+Run a specific test file:
+
+[source,bash]
+----
+cd assets && npm test -- ClustersList.test.jsx
+----
+
+Run tests matching a pattern:
+
+[source,bash]
+----
+cd assets && npm test -- --testNamePattern="renders cluster list"
+----
+
+Run tests in watch mode (for local development):
+
+[source,bash]
+----
+cd assets && npm test -- --watch
+----
+
+=== Test Organization
+
+Frontend tests are colocated with source files, following the pattern `ComponentName.test.jsx`:
+
+[source]
+----
+assets/js/
+├── pages/               # Page-level components
+│   ├── ClustersList.jsx
+│   ├── ClustersList.test.jsx
+│   └── ...
+├── common/              # Shared/reusable components
+│   ├── ClusterSummary.jsx
+│   ├── ClusterSummary.test.jsx
+│   └── ...
+├── state/               # Redux state (slices, sagas)
+│   ├── clusters.js
+│   ├── clusters.test.js
+│   └── ...
+└── lib/                 # Utilities and helpers
+    ├── utils.js
+    └── utils.test.js
+----
+
+=== Writing Component Tests
+
+Component tests render the component in isolation using React Testing Library and assert on what the user sees:
+
+[source,jsx]
+----
+import React from 'react';
+import { screen } from '@testing-library/react';
+import { renderWithRouter } from '@lib/test-utils';
+import ClusterSummary from './ClusterSummary';
+
+describe('ClusterSummary', () => {
+  it('renders the cluster name', () => {
+    renderWithRouter(<ClusterSummary name="hana-cluster-01" />);
+    expect(screen.getByText('hana-cluster-01')).toBeInTheDocument();
+  });
+});
+----
+
+The `renderWithRouter` helper (from `assets/js/lib/test-utils.jsx`) wraps the component with Redux store and Router providers, which most components require.
+
+=== Test Factories with Fishery
+
+The project uses link:https://github.com/thoughtbot/fishery[Fishery] for building frontend test data.
+Factories are co-located with source files or in `assets/js/lib/test-utils/factories/`:
+
+[source,js]
+----
+import { clusterFactory } from '@lib/test-utils/factories';
+
+// Build a default cluster object
+const cluster = clusterFactory.build();
+
+// Override specific fields
+const namedCluster = clusterFactory.build({ name: 'hana-cluster-01' });
+
+// Build a list
+const clusters = clusterFactory.buildList(3);
+----
+
+=== API Mocking with axios-mock-adapter
+
+HTTP calls are mocked using link:https://github.com/ctimmerm/axios-mock-adapter[axios-mock-adapter]:
+
+[source,js]
+----
+import MockAdapter from 'axios-mock-adapter';
+import { networkClient } from '@lib/network';
+
+const axiosMock = new MockAdapter(networkClient);
+
+afterEach(() => axiosMock.reset());
+
+it('loads clusters from the API', async () => {
+  const clusters = clusterFactory.buildList(2);
+  axiosMock.onGet('/api/v1/clusters').reply(200, { items: clusters });
+
+  // ... render and assert
+});
+----
+
+== End-to-End Testing (Cypress)
+
+=== Overview
+
+E2E tests live in `test/e2e/` and use link:https://www.cypress.io/[Cypress].
+These tests run against a real or simulated Trento deployment and cover full user flows.
+
+=== Test Structure
+
+[source]
+----
+test/e2e/
+├── cypress/
+│   ├── e2e/              # Test specs (one file per feature area)
+│   │   ├── clusters_overview.cy.js
+│   │   ├── hana_cluster_details.cy.js
+│   │   ├── host_details.cy.js
+│   │   └── ...
+│   ├── fixtures/         # Static data loaded in tests (keyed by scenario)
+│   ├── pageObject/       # Page Object helpers abstracting UI interactions
+│   ├── plugins/          # Cypress plugin configuration
+│   └── support/          # Global setup and custom commands
+├── cypress.config.js     # Cypress configuration
+└── package.json
+----
+
+=== Running E2E Tests
+
+Install Cypress dependencies:
+
+[source,bash]
+----
+cd test/e2e && npm install
+----
+
+Open the Cypress interactive UI (recommended for local development):
+
+[source,bash]
+----
+cd test/e2e && npm run cypress:open
+----
+
+This opens the Cypress Test Runner, where you can select and run individual specs visually.
+
+=== Environment Configuration
+
+Cypress reads configuration from `cypress.config.js` and environment variable overrides.
+The key configuration values are:
+
+[options="header"]
+|===
+| Variable | Default | Description
+
+| `CYPRESS_BASE_URL`
+| `http://localhost:4000`
+| URL of the Trento Web instance under test
+
+| `wanda_mode`
+| `demo`
+| `demo` for local dev (photofinish-driven), `prod` for an installed Trento instance
+
+| `web_mode`
+| `dev`
+| `dev` for local dev instance, `prod` for installed Trento
+
+| `photofinish_binary`
+| `photofinish`
+| Path to the photofinish binary
+
+| `idp_url`
+| `http://localhost:8081`
+| Identity provider URL (for SSO tests)
+|===
+
+=== Photofinish and Test Scenarios
+
+E2E tests use link:https://github.com/trento-project/photofinish[photofinish] to load test scenarios.
+Photofinish replays discovery data from JSON fixture files, simulating agent-reported infrastructure.
+
+Scenario fixtures are in `test/fixtures/scenarios/`.
+Each subdirectory represents a named scenario that photofinish can load.
+
+Available scenarios include:
+
+* `clusters-overview` — multiple HANA clusters
+* `hana-cluster-details` — single HANA cluster with full details
+* `hana-database-details` — HANA database with details
+* `hana-scale-out` — HANA scale-out configuration
+* `hosts-overview` — multiple hosts
+* `sap-systems-overview` — SAP systems landscape
+
+=== Wanda Modes
+
+The `wanda_mode` setting controls how checks execution is handled:
+
+* `demo` — Uses a local Wanda instance started with the Docker Compose `wanda` profile.
+Run `docker-compose --profile wanda up -d` before E2E tests in demo mode.
+* `prod` — Tests run against an installed Trento server with Wanda.
+Use this mode only for tests targeting a real deployment.
+
+=== Page Object Pattern
+
+E2E tests use the Page Object pattern to abstract UI interactions.
+Page Object helpers are in `test/e2e/cypress/pageObject/`.
+
+[source,js]
+----
+// Example usage in a test spec
+import * as clustersPage from '../pageObject/clusters_overview_po';
+
+describe('Clusters overview', () => {
+  it('shows all discovered clusters', () => {
+    clustersPage.visit();
+    clustersPage.expectClustersCount(3);
+  });
+});
+----
+
+== See Also
+
+* xref:Development/hack-on-the-trento.adoc[Local Development Setup]
+* xref:Development/ci-cd.adoc[CI/CD Pipeline Guide]
+* link:https://hexdocs.pm/ex_unit/ExUnit.html[ExUnit documentation]
+* link:https://hexdocs.pm/mox/Mox.html[Mox documentation]
+* link:https://testing-library.com/docs/react-testing-library/intro/[React Testing Library]
+* link:https://www.cypress.io/[Cypress documentation]

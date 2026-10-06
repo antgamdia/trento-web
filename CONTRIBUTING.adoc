@@ -26,6 +26,16 @@ and include the output in your issue. The script should remove sensitive
 data automatically but please make sure you are not sharing any
 sensitive data of your own.
 
+== Developer Resources
+
+Before contributing code, familiarise yourself with the following guides:
+
+* xref:guides/Development/hack-on-the-trento.adoc[Local Development Setup] — start here to get Trento running on your machine
+* xref:guides/Development/testing.adoc[Testing Guide] — how to run and write backend, frontend, and E2E tests
+* xref:guides/Development/ci-cd.adoc[CI/CD Pipeline Guide] — understand the GitHub Actions workflows, PR environments, and release process
+* xref:guides/Development/environment-variables.adoc[Environment Variables] — full reference for configuration options
+* link:hack/README.md[Developer Tools (`hack/`)] — helper scripts for API docs, test scenarios, and flaky test analysis
+
 == Submitting changes
 
 Always refer to the https://github.com/trento-project/docs[docs
